@@ -1,0 +1,14 @@
+{
+  "author": {
+    "name": "Eran Betzalel",
+    "email": "eran.betzalel@gmail.com"
+  },
+  "name": "deque-stream",
+  "description": "Stream powered by Deque circular queue for blazing fast performance",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "double-ended-queue": "^2.1.0-0"
+  },
+  "license": "MIT"
+}

@@ -14,8 +14,6 @@ describe('Deque readable stream', function () {
     });
 
     it('should pipe data', function (done) {
-        this.timeout(10 * 1000);
-
         let inByteCounter = 0;
         let outByteCounter = 0;
 
@@ -48,6 +46,50 @@ describe('Deque readable stream', function () {
             inByteCounter += this.dataChunk.length;
 
             if (inByteCounter > MAX_IN_BYTES) {
+                dequeReadableStream.end();
+
+                clearInterval(writeInterval);
+            }
+        }, 10);
+    });
+
+    it('should keep data in order', function (done) {
+        this.timeout(10 * 1000);
+
+        let inCounter = 0;
+        let outCounter = 0;
+
+        const dequeReadableStream = new DequeReadableStream({bufferSize: QUEUE_BUFFER_SIZE});
+
+        const writeableStream = new stream.Writable({
+            write(chunk, encoding, callback) {
+                outCounter++;
+
+                if (parseInt(chunk) !== outCounter) {
+                    done(new Error(`chunk (${chunk}) !== outCounter (${outCounter})`));
+                } else {
+                    callback();
+                }
+            }
+        });
+
+        dequeReadableStream
+            .on('error', done)
+            .pipe(writeableStream)
+            .on('error', done)
+            .on('finish', () => {
+                console.log({
+                    inCounter,
+                    outCounter
+                });
+
+                done();
+            });
+
+        const writeInterval = setInterval(() => {
+            dequeReadableStream.write((++inCounter).toString());
+
+            if (inCounter > 300) {
                 dequeReadableStream.end();
 
                 clearInterval(writeInterval);

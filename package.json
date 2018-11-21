@@ -1,6 +1,6 @@
 {
   "name": "deque-stream",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Stream powered by Deque circular queue for blazing fast performance",
   "main": "index.js",
   "dependencies": {

@@ -1,14 +1,26 @@
 {
-  "author": {
-    "name": "Eran Betzalel",
-    "email": "eran.betzalel@gmail.com"
-  },
   "name": "deque-stream",
-  "description": "Stream powered by Deque circular queue for blazing fast performance",
   "version": "1.0.0",
+  "description": "Stream powered by Deque circular queue for blazing fast performance",
   "main": "index.js",
   "dependencies": {
     "double-ended-queue": "^2.1.0-0"
   },
-  "license": "MIT"
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exposebox/deque-stream.git"
+  },
+  "author": {
+    "name": "Eran Betzalel",
+    "email": "eran.betzalel@gmail.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/exposebox/deque-stream/issues"
+  },
+  "homepage": "https://github.com/exposebox/deque-stream#readme"
 }

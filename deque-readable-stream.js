@@ -7,11 +7,14 @@ class DequeReadableStream extends stream.Readable {
     constructor(options) {
         super(options);
 
+        this.readingData = false;
         this.buffer = new Deque(options.bufferSize);
     }
 
     write(data) {
         this.buffer.push(data);
+
+        this.startReadingData();
     }
 
     end() {
@@ -19,23 +22,29 @@ class DequeReadableStream extends stream.Readable {
     }
 
     _read() {
-        this.allowPushData = true;
+        this.startReadingData()
+    }
 
-        this.readData();
+    startReadingData() {
+        if (!this.readingData) {
+            this.readingData = true;
+
+            setImmediate(() => this.readData());
+        }
     }
 
     readData() {
         const buffer = this.buffer;
 
-        while (this.allowPushData) {
-            if (buffer.isEmpty()) {
-                return setImmediate(() => this.readData());
-            }
+        while (this.readingData) {
+            const item = buffer.peekFront();
 
-            if (this.push(buffer.peekFront())) {
+            if (item === undefined) {
+                this.readingData = false;
+            } else if (this.push(item)) {
                 buffer.shift();
             } else {
-                this.allowPushData = false;
+                this.readingData = false;
             }
         }
     }

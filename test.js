@@ -27,18 +27,16 @@ describe('Deque readable stream', function () {
             }
         });
 
-        dequeReadableStream
-            .on('error', done)
-            .pipe(writeableStream)
-            .on('error', done)
-            .on('finish', () => {
-                console.log({
-                    inBytes: inByteCounter,
-                    outBytes: outByteCounter,
-                });
+        stream.pipeline(dequeReadableStream, writeableStream, err => {
+            if (err) return done(err);
 
-                done();
+            console.log({
+                inBytes: inByteCounter,
+                outBytes: outByteCounter,
             });
+
+            done();
+        });
 
         const writeInterval = setInterval(() => {
             dequeReadableStream.write(this.dataChunk);
@@ -54,8 +52,6 @@ describe('Deque readable stream', function () {
     });
 
     it('should keep data in order', function (done) {
-        this.timeout(10 * 1000);
-
         let inCounter = 0;
         let outCounter = 0;
 
@@ -73,23 +69,23 @@ describe('Deque readable stream', function () {
             }
         });
 
-        dequeReadableStream
-            .on('error', done)
-            .pipe(writeableStream)
-            .on('error', done)
-            .on('finish', () => {
-                console.log({
-                    inCounter,
-                    outCounter
-                });
+        stream.pipeline(dequeReadableStream, writeableStream, err => {
+            if (err) return done(err);
 
-                done();
+            console.log({
+                inCounter,
+                outCounter
             });
 
-        const writeInterval = setInterval(() => {
-            dequeReadableStream.write((++inCounter).toString());
+            done();
+        });
 
-            if (inCounter > 300) {
+        const writeInterval = setInterval(() => {
+            for (let i = 0; i < 10000; i++) {
+                dequeReadableStream.write((++inCounter).toString());
+            }
+
+            if (inCounter > 500000) {
                 dequeReadableStream.end();
 
                 clearInterval(writeInterval);
